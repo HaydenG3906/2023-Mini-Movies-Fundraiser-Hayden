@@ -2,6 +2,30 @@ import pandas
 import random
 from datetime import date
 
+# set variables
+cardnum = 0
+cashorcred = "null"
+pizza_num_cheese = 0
+pizza_num_pepperoni = 0
+pizza_num_hamcheese = 0
+pizza_num_hawaiian = 0
+pizza_num_vegan = 0
+MAX_TICKETS = 5
+tickets_sold = 0
+pizza_ordered = 0
+order_print_message = "Please Enter The Pizza wanted. Num of Pizza Ordered {}: ".format(pizza_ordered)
+
+yes_no_list = ["yes", "no"]
+payment_list = ["cash", "credit"]
+delivery_list = ["pickup", "delivery"]
+
+# Lists to hold ticket details
+pizza_types = []
+all_names = []
+all_ticket_costs = []
+all_surcharge = []
+
+
 # functions go here
 
 
@@ -24,13 +48,17 @@ Delivery and Details
     - Address (If Delivery)
     - Phone Number
     
-    
-    
+Select If paying now with credit or cash (only if pickup) in store
+
+Enter Payment Details if paying with credits (For the assessment instead of entering a real card
+enter a 4 digit number as an example for a card)
+
+Your receipt should print in a text file
+
 *******************************''')
 
+
 # checks that user response is not blank
-
-
 def not_blank(question):
     while True:
         response = input(question)
@@ -53,17 +81,17 @@ def num_check(question):
 
 
 # Calculate the ticket price based on the age
-def calc_ticket_price(var_age):
+# def calc_ticket_price(var_age):
     # ticket is $7.50 for users under 16
-    if var_age < 16:
-        price = 7.5
+  #  if var_age < 16:
+   #     price = 7.5
     # ticket is $10.50 for users between 16 and 64
-    elif var_age <= 64:
-        price = 10.5
+    #elif var_age <= 64:
+     #   price = 10.5
     # ticket price is $6.50 for seniors (65+)
-    else:
-        price = 6.5
-    return price
+    #else:
+    #    price = 6.5
+    #return price
 
 
 # checks that user enters a valid response based on a list of options
@@ -90,18 +118,6 @@ def currency(x):
 # main routine starts here
 
 
-# set maximum number of tickets below
-MAX_TICKETS = 5
-tickets_sold = 0
-
-yes_no_list = ["yes", "no"]
-payment_list = ["cash", "credit"]
-
-# Lists to hold ticket details
-all_names = []
-all_ticket_costs = []
-all_surcharge = []
-
 # Dictionary used to create data frame ie: column_name:list
 mini_movie_dict = {
     "Name": all_names,
@@ -117,42 +133,76 @@ if want_instructions == "yes":
 
 print()
 
-# loop to sell tickets
-while tickets_sold < MAX_TICKETS:
-    name = not_blank("Please enter your name or 'xxx' to quit: ")
-
-    if name == 'xxx' and len(all_names) > 0:
-        break
-    elif name == 'xxx':
-        print("You must sell at least one ticket before quitting")
-        continue
-
-    age = num_check("Age: ")
-
-    if 12 <= age <= 120:
-        pass
-    elif age < 12:
-        print("Go home kiddo")
-        continue
+while True:
+    pizza_wanted = num_check("Enter Number Of Pizzas wanted: ")
+    if pizza_wanted > 30:
+        print("sorry the max amount of pizza that can be ordered at a time is 30")
     else:
-        print("Error. Looks like a typo, try again")
+        break
+
+# loop to sell tickets
+
+while pizza_ordered < pizza_wanted:
+    print('''List of Pizza: 
+          1. Cheese                  $4
+          2. Pepperoni               $5
+          3. Ham & Cheese            $5
+          4. Hawaiian                $5
+          5. Vegan                   $6''')
+    pizza_inputed = num_check(order_print_message)
+    if pizza_inputed > 5:
+        order_print_message = "Please enter a number 1-5: "
+    else:
+        pizza_ordered = pizza_ordered + 1 # add 1 too pizza ordered
+        order_print_message = "Please Enter The Pizza wanted. Num of Pizza Ordered {}: ".format(pizza_ordered)
+        if pizza_inputed == 1:
+            pizza_num_cheese = pizza_num_cheese + 1
+        elif pizza_inputed == 2:
+            pizza_num_pepperoni = pizza_num_pepperoni + 1
+        elif pizza_inputed == 3:
+            pizza_num_hamcheese = pizza_num_hamcheese + 1
+        elif pizza_inputed == 4:
+            pizza_num_hawaiian = pizza_num_hawaiian + 1
+        elif pizza_inputed == 5:
+            pizza_num_vegan = pizza_num_vegan + 1
+        pizza_types.append(pizza_inputed)  # put the pizza in the list
         continue
+
+print("Pizza Ordered: {}x Cheese, {}x Pepperoni, {}x Ham and Cheese, {}x Hawaiian, {}x Vegan".format(pizza_num_cheese, pizza_num_pepperoni, pizza_num_hamcheese, pizza_num_hawaiian, pizza_num_vegan))
+
+cost = pizza_num_cheese * 4 + pizza_num_pepperoni * 5 + pizza_num_hamcheese * 5 + pizza_num_hawaiian * 5 + pizza_num_vegan * 6
+
+print("current cost: ${}".format(cost))
+delivery_method = string_checker("Choose a delivery method Pickup / "
+                            "Delivery (+$10): ",
+                            2, delivery_list)
+
+if delivery_method == "delivery":
+    cost = cost + 10
+    addressstreet = not_blank("Enter Street Name: ")
+    addressnum = num_check("Enter Street Number: ")
+else:
+    cashorcred = not_blank("Are you paying with cash in store or credit now?")
+
+name = not_blank("Please enter your name or 'xxx' to quit: ")
+phonenum = num_check("Please enter your phone number: +64 ")
+
+print("Total: {}".format(cost))
+
+while cardnum == 0:
+    if delivery_method == "delivery" or cashorcred == "credit":
+        cardnum = num_check("enter credit card number (for assessment enter 4 digits): ")
+        if cardnum > 9999 or cardnum < 999:
+            cardnum = 0
+            print("Please enter the correct amount of digits (4)")
+
 
     # calculate ticket cost
-    ticket_cost = calc_ticket_price(age)
+    # ticket_cost = calc_ticket_price(age)
 
     # get payment method
-    pay_method = string_checker("Choose a payment method (cash / "
-                                "credit): ",
-                                2, payment_list)
 
-    if pay_method == "cash":
-        surcharge = 0
-    else:
-        # calculate 5% surcharge if users are paying by credit card
-        surcharge = ticket_cost * 0.05
-
-    tickets_sold += 1
+print('''
 
     # add ticket name, cost and surcharge to lists
     all_names.append(name)
@@ -246,3 +296,4 @@ print("----- Ticket Cost / Profit -----")
 # output total ticket sales and profit
 print("Total Ticket Sales: ${:.2f}".format(total))
 print("Total ticket profit ${:.2f}".format(profit))
+''')
