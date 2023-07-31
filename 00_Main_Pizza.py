@@ -3,6 +3,7 @@ import random
 from datetime import date
 
 # set variables
+selectpizza = "null"
 cardnum = 0
 cashorcred = "null"
 pizza_num_cheese = 0
@@ -135,8 +136,8 @@ print()
 
 while True:
     pizza_wanted = num_check("Enter Number Of Pizzas wanted: ")
-    if pizza_wanted > 30:
-        print("sorry the max amount of pizza that can be ordered at a time is 30")
+    if pizza_wanted > 5:
+        print("sorry the max amount of pizza that can be ordered at a time is 5")
     else:
         break
 
@@ -166,9 +167,32 @@ while pizza_ordered < pizza_wanted:
         elif pizza_inputed == 5:
             pizza_num_vegan = pizza_num_vegan + 1
         pizza_types.append(pizza_inputed)  # put the pizza in the list
+
+        if pizza_inputed == 1:
+            pizza_name = "Cheese"
+            pizza_types.append(pizza_inputed)
+        elif pizza_inputed == 2:
+            pizza_name = "Pepperoni"
+        elif pizza_inputed == 3:
+            pizza_name = "Ham & cheese"
+        elif pizza_inputed == 4:
+            pizza_name = "Hawaiian"
+        elif pizza_inputed == 5:
+            pizza_name = "Vegan"
         continue
 
 print("Pizza Ordered: {}x Cheese, {}x Pepperoni, {}x Ham and Cheese, {}x Hawaiian, {}x Vegan".format(pizza_num_cheese, pizza_num_pepperoni, pizza_num_hamcheese, pizza_num_hawaiian, pizza_num_vegan))
+
+while selectpizza != "xxx":
+    pizzamodificaton = string_checker("Would you like to modify a pizza?")
+    print('''Pizzas:
+          1. 
+          2. 
+          3. 
+          4. 
+          5. ''')
+    selectpizza = num_check("Select a Pizza to modify or 'xxx' to stop modifying")
+
 
 cost = pizza_num_cheese * 4 + pizza_num_pepperoni * 5 + pizza_num_hamcheese * 5 + pizza_num_hawaiian * 5 + pizza_num_vegan * 6
 
