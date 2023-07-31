@@ -16,6 +16,8 @@ class bcolors:
 
 
 # set variables
+cost = 0
+addmodification = 100
 selectedpizza = 0
 formatmod = ""
 selectpizza = "null"
@@ -270,13 +272,22 @@ while selectpizza != "0":
     elif selectpizza == 5:
         selectedpizza = pizza_types_name[4]
 
-    print("Pizza Selected: " + selectedpizza)
-    print('''
-    Select what to add to Pizza:
-    1. Meat                $3
-    2. Cheese              $2
-    3. Sauce               $1
-    4. Stuffed Crust       $3''')
+    while addmodification != 0:
+        print("Pizza Selected: " + selectedpizza)
+        print('''
+        Options:
+        1. Meat                $3
+        2. Cheese              $2
+        3. Sauce               $1
+        4. Stuffed Crust       $3''')
+        addmodification = num_check("Select What to add to Pizza or '0' to end: ")
+
+        if addmodification == 1:
+            selectedpizza = selectedpizza + " + Meat"
+            cost = cost + 3
+    else:
+        break
+
 
 cost = pizza_num_cheese * 4 + pizza_num_pepperoni * 5 + pizza_num_hamcheese * 5 + pizza_num_hawaiian * 5 + pizza_num_vegan * 6
 
