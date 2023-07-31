@@ -2,7 +2,22 @@ import pandas
 import random
 from datetime import date
 
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
 # set variables
+selectedpizza = 0
+formatmod = ""
 selectpizza = "null"
 cardnum = 0
 cashorcred = "null"
@@ -21,6 +36,7 @@ payment_list = ["cash", "credit"]
 delivery_list = ["pickup", "delivery"]
 
 # Lists to hold ticket details
+pizza_types_name = []
 pizza_types = []
 all_names = []
 all_ticket_costs = []
@@ -138,6 +154,8 @@ while True:
     pizza_wanted = num_check("Enter Number Of Pizzas wanted: ")
     if pizza_wanted > 5:
         print("sorry the max amount of pizza that can be ordered at a time is 5")
+    elif pizza_wanted < 1:
+        print(bcolors.FAIL + "You must order at least 1 pizza to continue" + bcolors.ENDC)
     else:
         break
 
@@ -151,8 +169,8 @@ while pizza_ordered < pizza_wanted:
           4. Hawaiian                $5
           5. Vegan                   $6''')
     pizza_inputed = num_check(order_print_message)
-    if pizza_inputed > 5:
-        order_print_message = "Please enter a number 1-5: "
+    if pizza_inputed > 5 or pizza_inputed < 1:
+        order_print_message = bcolors.FAIL + "Please enter a number 1-5: " + bcolors.ENDC
     else:
         pizza_ordered = pizza_ordered + 1 # add 1 too pizza ordered
         order_print_message = "Please Enter The Pizza wanted. Num of Pizza Ordered {}: ".format(pizza_ordered)
@@ -170,29 +188,95 @@ while pizza_ordered < pizza_wanted:
 
         if pizza_inputed == 1:
             pizza_name = "Cheese"
-            pizza_types.append(pizza_inputed)
+            pizza_types_name.append(pizza_name)
         elif pizza_inputed == 2:
             pizza_name = "Pepperoni"
+            pizza_types_name.append(pizza_name)
         elif pizza_inputed == 3:
             pizza_name = "Ham & cheese"
+            pizza_types_name.append(pizza_name)
         elif pizza_inputed == 4:
             pizza_name = "Hawaiian"
+            pizza_types_name.append(pizza_name)
         elif pizza_inputed == 5:
             pizza_name = "Vegan"
+            pizza_types_name.append(pizza_name)
         continue
 
-print("Pizza Ordered: {}x Cheese, {}x Pepperoni, {}x Ham and Cheese, {}x Hawaiian, {}x Vegan".format(pizza_num_cheese, pizza_num_pepperoni, pizza_num_hamcheese, pizza_num_hawaiian, pizza_num_vegan))
 
-while selectpizza != "xxx":
-    pizzamodificaton = string_checker("Would you like to modify a pizza?")
-    print('''Pizzas:
-          1. 
-          2. 
-          3. 
-          4. 
-          5. ''')
-    selectpizza = num_check("Select a Pizza to modify or 'xxx' to stop modifying")
+print('''
+******************************************************
+''')
 
+
+# Create a list of tuples containing pizza types and quantities
+pizza_quantities = [
+    ("Cheese", pizza_num_cheese),
+    ("Pepperoni", pizza_num_pepperoni),
+    ("Ham and Cheese", pizza_num_hamcheese),
+    ("Hawaiian", pizza_num_hawaiian),
+    ("Vegan", pizza_num_vegan)
+]
+
+# Create a list to hold the formatted strings for each pizza type and quantity
+formatted_pizzas = ["{}x {}".format(quantity, pizza_type) for pizza_type, quantity in pizza_quantities if quantity > 0]
+
+# Use the join method to create the final formatted string
+pizza_order_string = ", ".join(formatted_pizzas)
+
+# Print the pizza order string
+print("Pizza Ordered: " + pizza_order_string)
+
+print('''
+******************************************************
+''')
+
+
+if pizza_wanted >= 1:
+    formatmod = pizza_types_name[0]
+if pizza_wanted >= 2:
+    formatmod = formatmod + ", " + pizza_types_name[1]
+if pizza_wanted >= 3:
+    formatmod = formatmod + ", " + pizza_types_name[2]
+if pizza_wanted >= 4:
+    formatmod = formatmod + ", " + pizza_types_name[3]
+if pizza_wanted >= 5:
+    formatmod = formatmod + ", " + pizza_types_name[4]
+
+while selectpizza != "0":
+    pizzamodificaton = string_checker("Would you like to modify a pizza? ", 1, yes_no_list)
+    if pizzamodificaton == "yes":
+
+        # Split formatmod into a list of pizza types
+        pizza_types_selected = formatmod.split(", ")
+
+        print("Pizzas:")
+        # Iterate through the selected pizza types and print them with their corresponding index
+        for index, pizza_type in enumerate(pizza_types_selected, start=1):
+            print("{}. {}".format(index, pizza_type))
+
+    selectpizza = num_check("Select a Pizza to modify or '0' to stop modifying: ")
+
+    if selectpizza > pizza_wanted:
+        print("Please select a valid Number")
+    elif selectpizza == 1:
+        selectedpizza = pizza_types_name[0]
+    elif selectpizza == 2:
+        selectedpizza = pizza_types_name[1]
+    elif selectpizza == 3:
+        selectedpizza = pizza_types_name[2]
+    elif selectpizza == 4:
+        selectedpizza = pizza_types_name[3]
+    elif selectpizza == 5:
+        selectedpizza = pizza_types_name[4]
+
+    print("Pizza Selected: " + selectedpizza)
+    print('''
+    Select what to add to Pizza:
+    1. Meat                $3
+    2. Cheese              $2
+    3. Sauce               $1
+    4. Stuffed Crust       $3''')
 
 cost = pizza_num_cheese * 4 + pizza_num_pepperoni * 5 + pizza_num_hamcheese * 5 + pizza_num_hawaiian * 5 + pizza_num_vegan * 6
 
