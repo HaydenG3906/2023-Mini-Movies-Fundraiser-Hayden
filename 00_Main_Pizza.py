@@ -43,6 +43,7 @@ pizza_types = []
 all_names = []
 all_ticket_costs = []
 all_surcharge = []
+stuffed_crust = [0, 0, 0, 0, 0]
 
 
 # functions go here
@@ -145,6 +146,7 @@ mini_movie_dict = {
 }
 
 # Ask the user if they want to see the instructions
+
 want_instructions = string_checker("Do you want to read the instructions (y/n): ", 1, yes_no_list)
 
 if want_instructions == "yes":
@@ -155,7 +157,7 @@ print()
 while True:
     pizza_wanted = num_check("Enter Number Of Pizzas wanted: ")
     if pizza_wanted > 5:
-        print("sorry the max amount of pizza that can be ordered at a time is 5")
+        print(bcolors.FAIL + "The max amount of pizza that can be ordered at a time is 5" + bcolors.ENDC)
     elif pizza_wanted < 1:
         print(bcolors.FAIL + "You must order at least 1 pizza to continue" + bcolors.ENDC)
     else:
@@ -221,7 +223,7 @@ pizza_quantities = [
 ]
 
 # Create a list to hold the formatted strings for each pizza type and quantity
-formatted_pizzas = ["{}x {}".format(quantity, pizza_type) for pizza_type, quantity in pizza_quantities if quantity > 0]
+formatted_pizzas = ["{}x {}".format(quantity, pizza_types_name) for pizza_types_name, quantity in pizza_quantities if quantity > 0]
 
 # Use the join method to create the final formatted string
 pizza_order_string = ", ".join(formatted_pizzas)
@@ -254,45 +256,68 @@ while selectpizza != "0":
 
         print("Pizzas:")
         # Iterate through the selected pizza types and print them with their corresponding index
-        for index, pizza_type in enumerate(pizza_types_selected, start=1):
+        for index, pizza_type in enumerate(pizza_types_name, start=1):
             print("{}. {}".format(index, pizza_type))
 
-        selectpizza = num_check("Select a Pizza to modify or '0' to stop modifying: ")
 
-        if selectpizza > pizza_wanted:
+        selectpizzanum = num_check("Select a Pizza to modify or '0' to stop modifying: ")
+
+        addmodification = 50 # reset
+
+        if selectpizzanum > pizza_wanted:
             print("Please select a valid Number")
-        elif selectpizza == 1:
+        elif selectpizzanum == 1:
             selectedpizza = pizza_types_name[0]
-        elif selectpizza == 2:
+        elif selectpizzanum == 2:
             selectedpizza = pizza_types_name[1]
-        elif selectpizza == 3:
+        elif selectpizzanum == 3:
             selectedpizza = pizza_types_name[2]
-        elif selectpizza == 4:
+        elif selectpizzanum == 4:
             selectedpizza = pizza_types_name[3]
-        elif selectpizza == 5:
+        elif selectpizzanum == 5:
             selectedpizza = pizza_types_name[4]
+        elif selectpizzanum == 0:
+            break
 
         while addmodification != 0:
+            print("")
             print("Pizza Selected: " + selectedpizza)
             print('''
-            Options:
-            1. Meat                $3
-            2. Cheese              $2
-            3. Sauce               $1
-            4. Stuffed Crust       $3''')
+Options:
+1. Meat                $3
+2. Cheese              $2
+3. Sauce               $1
+4. Stuffed Crust       $3''')
             addmodification = num_check("Select What to add to Pizza or '0' to end: ")
 
             if addmodification == 1:
                 selectedpizza = selectedpizza + " + Meat"
                 cost = cost + 3
-                pizza_types_name[0] = selectedpizza
-                pizza_type = selectedpizza
+                pizza_types_name[selectpizzanum - 1] = selectedpizza
+            elif addmodification == 2:
+                selectedpizza = selectedpizza + " + Cheese"
+                cost = cost + 2
+                pizza_types_name[selectpizzanum - 1] = selectedpizza
+            elif addmodification == 3:
+                selectedpizza = selectedpizza + " + Sauce"
+                cost = cost + 1
+                pizza_types_name[selectpizzanum - 1] = selectedpizza
+            elif addmodification == 4:
+                if stuffed_crust[selectpizzanum - 1] == 0:
+                    selectedpizza = selectedpizza + " + Stuffed Crust"
+                    cost = cost + 3
+                    pizza_types_name[selectpizzanum - 1] = selectedpizza
+                    stuffed_crust[selectpizzanum - 1] = 1
+                else:
+                    print(bcolors.FAIL + "stuffed crust can only be added once" + bcolors.ENDC)
+            elif addmodification == 0:
+                break
             else:
-                continue
+                print(bcolors.FAIL + "Enter a valid modification" + bcolors.ENDC)
+
     else:
         break
-
-cost = pizza_num_cheese * 4 + pizza_num_pepperoni * 5 + pizza_num_hamcheese * 5 + pizza_num_hawaiian * 5 + pizza_num_vegan * 6
+cost = cost + pizza_num_cheese * 4 + pizza_num_pepperoni * 5 + pizza_num_hamcheese * 5 + pizza_num_hawaiian * 5 + pizza_num_vegan * 6
 
 print("current cost: ${}".format(cost))
 delivery_method = string_checker("Choose a delivery method Pickup / "
@@ -306,10 +331,10 @@ if delivery_method == "delivery":
 else:
     cashorcred = not_blank("Are you paying with cash in store or credit now?")
 
-name = not_blank("Please enter your name or 'xxx' to quit: ")
-phonenum = num_check("Please enter your phone number: +64 ")
+name = not_blank("Please enter your name: ")
+phonenum = num_check("Please enter your phone number (no spaces): +64 ")
 
-print("Total: {}".format(cost))
+print("Total: ${}".format(cost))
 
 while cardnum == 0:
     if delivery_method == "delivery" or cashorcred == "credit":
