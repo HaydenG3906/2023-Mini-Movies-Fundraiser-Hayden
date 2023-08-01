@@ -257,37 +257,40 @@ while selectpizza != "0":
         for index, pizza_type in enumerate(pizza_types_selected, start=1):
             print("{}. {}".format(index, pizza_type))
 
-    selectpizza = num_check("Select a Pizza to modify or '0' to stop modifying: ")
+        selectpizza = num_check("Select a Pizza to modify or '0' to stop modifying: ")
 
-    if selectpizza > pizza_wanted:
-        print("Please select a valid Number")
-    elif selectpizza == 1:
-        selectedpizza = pizza_types_name[0]
-    elif selectpizza == 2:
-        selectedpizza = pizza_types_name[1]
-    elif selectpizza == 3:
-        selectedpizza = pizza_types_name[2]
-    elif selectpizza == 4:
-        selectedpizza = pizza_types_name[3]
-    elif selectpizza == 5:
-        selectedpizza = pizza_types_name[4]
+        if selectpizza > pizza_wanted:
+            print("Please select a valid Number")
+        elif selectpizza == 1:
+            selectedpizza = pizza_types_name[0]
+        elif selectpizza == 2:
+            selectedpizza = pizza_types_name[1]
+        elif selectpizza == 3:
+            selectedpizza = pizza_types_name[2]
+        elif selectpizza == 4:
+            selectedpizza = pizza_types_name[3]
+        elif selectpizza == 5:
+            selectedpizza = pizza_types_name[4]
 
-    while addmodification != 0:
-        print("Pizza Selected: " + selectedpizza)
-        print('''
-        Options:
-        1. Meat                $3
-        2. Cheese              $2
-        3. Sauce               $1
-        4. Stuffed Crust       $3''')
-        addmodification = num_check("Select What to add to Pizza or '0' to end: ")
+        while addmodification != 0:
+            print("Pizza Selected: " + selectedpizza)
+            print('''
+            Options:
+            1. Meat                $3
+            2. Cheese              $2
+            3. Sauce               $1
+            4. Stuffed Crust       $3''')
+            addmodification = num_check("Select What to add to Pizza or '0' to end: ")
 
-        if addmodification == 1:
-            selectedpizza = selectedpizza + " + Meat"
-            cost = cost + 3
+            if addmodification == 1:
+                selectedpizza = selectedpizza + " + Meat"
+                cost = cost + 3
+                pizza_types_name[0] = selectedpizza
+                pizza_type = selectedpizza
+            else:
+                continue
     else:
         break
-
 
 cost = pizza_num_cheese * 4 + pizza_num_pepperoni * 5 + pizza_num_hamcheese * 5 + pizza_num_hawaiian * 5 + pizza_num_vegan * 6
 
